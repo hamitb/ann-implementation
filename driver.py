@@ -14,3 +14,4 @@ np.random.seed(499)
 
 # Test the affine_forward function
 test_affine_forward()
+test_affine_backward()
