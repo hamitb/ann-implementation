@@ -3,7 +3,7 @@ import numpy as np
 from layers import *
 
 class ANN(object):
-	"""
+    """
     This class implements a modular fully-connected neural network with an 
     arbitrary number of hidden layers, ReLU nonlinearities, and a L2 loss
     function. For a network with L layers, the architecture will be
@@ -11,44 +11,43 @@ class ANN(object):
     {affine - relu} x (L - 1) - affine - loss
 
     where the {...} block is repeated L - 1 times.
-	"""
-	
-	def __init__(self, hidden_dims, input_dim, weight_scale=1e-2, dtype=np.float32):
-  
-		self.num_layers = 1 + len(hidden_dims)
-		self.dtype = dtype
-		self.params = {}
+    """
 
+    def __init__(self, hidden_dims, input_dim, weight_scale=1e-2, dtype=np.float32):
+        self.dtype = dtype
+        self.params = {}
+        self.num_layers = 1 + len(hidden_dims)
+        
+        """
+        In this part of the code, all parameters of the network should be
+        initialized and stored in the self.params dictionary. For a layer "l", you
+        should store the weights as "Wl" and biases as "bl". For example, for the 
+        first layer, "W0" and "b0" should be initialized and stored. These
+        parameters will be used in training and prediction phases. Weights should
+        be initialized with random numbers frome a normal distribution having zero
+        mean and standard deviation equal to weight_scale argument. Biases should
+        be initialized to zero.
 
-		"""
-		In this part of the code, all parameters of the network should be
-		initialized and stored in the self.params dictionary. For a layer "l", you
-		should store the weights as "Wl" and biases as "bl". For example, for the 
-		first layer, "W0" and "b0" should be initialized and stored. These
-		parameters will be used in training and prediction phases. Weights should
-		be initialized with random numbers frome a normal distribution having zero
-		mean and standard deviation equal to weight_scale argument. Biases should
-		be initialized to zero.
+        Inputs:
+        hidden_dims: dimensions of hidden layers, a list object.
+        input_dim: dimension of data vectors
+        weight_scale: scale of initial random weights
+        dtype: type of the parameters
+        """
+        # Initialize parameters
+        # Dimentions input_dim, ...(hidden_dims), loss
+        dims = [input_dim] + hidden_dims + [1]
+        for i in range(len(dims)-1):
+            dim, nextdim = dims[i], dims[i+1]
+            Wi = weight_scale * np.random.randn(dim, nextdim)
+            bi = np.zeros(nextdim)
 
-		Inputs:
-		hidden_dims: dimensions of hidden layers, a list object.
-		input_dim: dimension of data vectors
-		weight_scale: scale of initial random weights
-		dtype: type of the parameters
-		"""
-
-		############################################################################
-		#                            START OF YOUR CODE                            #
-		############################################################################
-		pass
-		############################################################################
-		#                             END OF YOUR CODE                             #
-		############################################################################
-
-		# Cast all parameters to the correct datatype
-		for k, v in self.params.iteritems():
-			self.params[k] = v.astype(dtype)
-
+            self.params["W{}".format(i)] = Wi
+            self.params["b{}".format(i)] = bi
+            
+        # Cast all parameters to the correct datatype
+        for k, v in self.params.iteritems():
+            self.params[k] = v.astype(dtype)
 
 	def loss(self, X, y=None):
 		"""
