@@ -97,6 +97,7 @@ def L2_loss(x, y):
     loss: scalar giving the loss
     dx: gradient of the loss with respect to x
     """
+    # Reshape Y
     loss = None
     dx = None
 

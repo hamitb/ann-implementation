@@ -12,11 +12,15 @@ from data import *
 np.random.seed(499)
 #
 
-# Test the affine_forward function
-# test_affine_forward()
-# test_affine_backward()
-# test_relu_forward()
-# test_relu_backward()
-# test_L2_loss()
+X_train, Y_train, X_test, Y_test = read_data(filename='../set1.dat')
+train_count = int(X_train.shape[0] * 0.8)
 
-test_ANN_loss()
+X_train, Y_train, X_valid, Y_valid = X_train[ :train_count], Y_train[:train_count],\
+                                     X_train[train_count: ], Y_train[train_count: ]
+
+ann = ANN([4], 2)
+ann.train_validate(X_train, Y_train, X_valid, Y_valid, maxEpochs=1000, learning_rate=1e-2)
+
+preds = ann.predict(X_test)
+print preds[:10]
+print Y_test[:10]

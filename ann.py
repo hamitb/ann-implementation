@@ -1,6 +1,7 @@
 import numpy as np
-
 from layers import *
+
+np.random.seed(499)
 
 class ANN(object):
     """
@@ -78,6 +79,7 @@ class ANN(object):
         """
         prev_activations= X
         self.params["a-1"] = X
+
         for i in range(len(self.dims)-1):
             # Get weight and bias for current layer
             Wi, bi = self.params["W{}".format(i)], self.params["b{}".format(i)]
@@ -94,6 +96,10 @@ class ANN(object):
             prev_activations = relu_out
         
         # If test mode return early
+        last_layer_index = self.layers_count-1
+        last_layer_output = self.params["o{}".format(last_layer_index)]
+        preds = last_layer_output
+
         if mode == 'test':
         	return preds
 
@@ -105,8 +111,6 @@ class ANN(object):
         for the parameters. Store the gradient for parameter self.params[p] in
         grads[p].
         """
-        last_layer_index = self.layers_count-1
-        last_layer_output = self.params["o{}".format(last_layer_index)]
         
         loss, dout = L2_loss(last_layer_output, y)
         x = self.params["a{}".format(last_layer_index-1)]
@@ -116,7 +120,6 @@ class ANN(object):
         dout, dw, db = affine_backward(dout, cache)
 
         grads["W{}".format(last_layer_index)] = dw
-        grads["o{}".format(last_layer_index)] = dout
         grads["b{}".format(last_layer_index)] = db
 
         for i in reversed(range(self.layers_count-1)):
@@ -132,11 +135,10 @@ class ANN(object):
             dout, dw, db = affine_backward(d_relu, cache)
             
             grads["W{}".format(i)] = dw
-            grads["o{}".format(i)] = dout
             grads["b{}".format(i)] = db
 
         return loss, grads
-    def train_validate	(self, X_t, y_t, X_v, y_v, maxEpochs=100, learning_rate=1e-4):
+    def train_validate(self, X_t, y_t, X_v, y_v, maxEpochs=100, learning_rate=1e-4):
         """
         Train the network using gradient descent algorithm.
 
@@ -155,13 +157,20 @@ class ANN(object):
         """
         loss_train = []
         loss_valid = []
-        ############################################################################
-        #                            START OF YOUR CODE                            #
-        ############################################################################
-        pass
-        ############################################################################
-        #                             END OF YOUR CODE                             #
-        ############################################################################
+        
+        for i in range(maxEpochs):
+            cur_loss_train, grads = self.loss(X_t, y_t)
+            cur_loss_valid, _ = self.loss(X_v, y_v)
+            
+            print "Training loss: {}\tValidation loss: {}\tEpoch {}/{}"\
+                   .format(cur_loss_train, cur_loss_valid, i, maxEpochs)
+            loss_train.append(cur_loss_train)
+            loss_valid.append(cur_loss_valid)
+
+            # Update the weights and biases using gradient descent
+            for param, grad in grads.items():
+                self.params[param] += -learning_rate * grad
+            
         return loss_train, loss_valid
     def predict(self, X):
         """
