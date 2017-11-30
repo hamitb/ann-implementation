@@ -62,7 +62,6 @@ def relu_forward(x):
     out: Output, an array of the same shape as x
     cache: x
     """
-
     out = np.maximum(0, x)
     cache = x
     return out, cache

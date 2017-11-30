@@ -139,7 +139,6 @@ def test_L2_loss():
 	print 'Testing L2_loss function:'
 	print 'loss error: ', rel_error(correct_out, loss)
 	print 'dx error: ', rel_error(correct_dx, dx)
-	print 
 	
 def test_ANN_predict():
 	net = ANN([3],2)
@@ -156,3 +155,18 @@ def test_ANN_predict():
 	y_hat = net.predict(x)
 	print 'Testing ANN.predict function:'
 	print 'prediction error:',rel_error(y,y_hat)
+
+def test_ANN_loss():
+	net = ANN([3],2)
+
+	net.params['b0'][:] = (np.arange(3,dtype=np.float64)+3.).reshape(net.params['b0'].shape)
+	net.params['b1'][:] = (np.arange(1,dtype=np.float64)+4.).reshape(net.params['b1'].shape)
+
+	net.params['W0'] = (np.arange(6,dtype=np.float64)+1.).reshape(net.params['W0'].shape)
+	net.params['W1'] = (np.arange(3,dtype=np.float64)+7.).reshape(net.params['W1'].shape)
+
+	x = np.array([[1., 2.],[3., 4.],[5.,6.]])
+	y = np.array([[396.], [740.], [1084.]])
+
+	print 'Testing ANN.loss function:'
+	y_hat = net.loss(x, y)
